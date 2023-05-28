@@ -4,15 +4,17 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"net/http"
+	"os"
 
 	"github.com/Sagar-Chowdhury/MongoDBGo/model"
+	"github.com/joho/godotenv"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-const connectionString = "mongodb+srv://syncwithsagar:<sagar>@cluster0.nims6uq.mongodb.net/?retryWrites=true&w=majority"
 const dbName = "netflix"
 const colName = "watchlist"
 
@@ -21,6 +23,12 @@ var collection *mongo.Collection
 // basically used for initialization before main method.
 // here it is serving the purpouse of connecting to the DB.
 func init() {
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
+	connectionString := os.Getenv("MONGODB_URL")
+
 	clientOption := options.Client().ApplyURI(connectionString)
 	client, err := mongo.Connect(context.TODO(), clientOption) //todo basically placeholder context.
 	if err != nil {
@@ -112,5 +120,11 @@ func getAllMovies() []bson.M {
 	}
 
 	return movies
+
+}
+
+// actual controller-file
+func GetAllMovies(w http.ResponseWriter, r *http.Request) {
+	w.Header()
 
 }
